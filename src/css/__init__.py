@@ -1,47 +1,5 @@
 import re
 
-class Css:
-    reader = None 
-    def __init__(self, reader):
-        self.reader = reader
-
-class CssParser:
-    CssDictionary dictionary
-
-class Define:
-    def parse(self, reader, params):
-        reader.open_block()
-        block = reader.read_current_level()
-        print("hola")
-        reader.cssDictionary.define(params[0], block)
-
-class ApplyBlock:
-    block = ''
-    
-    def __init__(self, style, type, id):
-        selector = ''
-        if type == 'tag':
-            selector = id
-        elif type == 'class':
-            selector = '.' + id
-        elif type == 'id':
-            selector = '#' + id
-        block = selector + ' \n'
-        block = block + get_definition(style)
-
-class Apply:
-    def apply(self, style, id):
-    
-    def parse(self, reader, params):
-        param_list = self.parse_params(params)
-        reader.cssDictionary.get_definition(param_list.pop(0))
-        while param_list:
-            selectorParser = CssSelectorParser(param_list.pop(0))
-            reader.writeline("hola")
-        
-    def parse_params(self, params):
-        [x.strip() for x in params.split(',')]
-
 class CssDictionary:
     styles = {}
     def define(self, id, definition):
@@ -52,22 +10,62 @@ class CssDictionary:
     
     def get_definition(self, id):
         return self.styles['id']
+
+class CssStyleBlockGenerator:
+    dictionary = CssDictionary()
+    def block(self, style, selector):
+        styleDef = self.dictionary.get_definition(style)
+        return CssStyleBlock(styleDef).block()
+    
+class CssParser:
+    styleGenerator = CssStyleBlockGenerator()
+    
+    def parse_define(self, reader, params):
+        reader.open_block()
+        block = reader.read_current_level()
+        reader.cssDictionary.define(params[0], block)
         
-class CssDefinition:
-    id = ""
-    definition = ''
+    def parse_apply(self, reader, params):
+        apply_params = CssApplyStyleParams(params) 
+        reader.writeline(styleGenerator(apply_params.style, apply_params.selectors))
+        
+    def split(self, params):
+        return [x.strip() for x in params.split(',')]
+
+
+class CssStyleBlock:
+    styleDef = ""
+    selector = ""
+    def __init__(self, styleDef, selector):
+        self.styleDef = styleDef
+        self.selector = selector
+    def opening(self):
+        return self.selector + '{'
     
-class CssSelectorParser:
-    selector = ''
-    def __init__(self, param):
-        type, identifier = re.match(r'(\w+)\=(\w+)', param).groups()
+    def closing(self):
+        return '}'
+    
+    def block(self):
+        block = self.opening() + "\n"
+        block = block + self.styleDef + "\n"
+        block = block + self.closing() + "\n"
+        return block
+
+class CssSelector:
+    selector = ""
+    def __init__(self, type, id):
         if type == 'tag':
-            selector = identifier
+            selector = id
         elif type == 'class':
-            selector = '.' + identifier
+            selector = '.' + id
         elif type == 'id':
-            selector = '#' + identifier
-    def selector(self):
-        return self.selector
-    
-    
+            selector = '#' + id
+
+class CssApplyStyleParams:
+    style = ""
+    selectors = ""
+    def __init__(self, params):
+        list = [x.strip() for x in params.split(',')]
+        self.style = list.pop(0)
+        self.selectors = list
+        

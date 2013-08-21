@@ -1,35 +1,40 @@
 from lexical import Block
 from lexical import Statement
 
-class Html(Block):
-    #manifest = ""
-    #xmlns = ""
-    def opening_tag(self, params):
-        return "<html>"
-    def closing_tag(self):
-        return "</html>"
-
-class Head(Block):
-    def opening_tag(self, params):
-        return "<head>"
-    def closing_tag(self):
-        return "</head>"
-
-class Body(Block):
-    def opening_tag(self, params):
-        return "<body>"
-    def closing_tag(self):
-        return "</body>"
-
-class Footer(Block):
-    def opening_tag(self, params):
-        return "<body>"
-    def closing_tag(self):
-        return "</body>"
-
-class Doctype(Statement):
-    def tag(self, params):
-        return "<!DOCTYPE html>"
+class HtmlParser():
+    def parse_html(self, params):
+        self.write_block(Tag("html", params))
+        
+    def parse_body(self, params):
+        self.write_tag_block(Tag("body", params))
+        
+    def parse_head(self, params):
+        self.write_tag_block(Tag("head", params))
+        
+    def parse_doctype(self, params):
+        self.write_tag_statement(Tag("!DOCTYPE", params))
+        
+    def parse_footer(self, params):
+        self.write_tag_block(Tag("footer", params))
     
-def process_html():
-    return ""
+    def write_tag_block(self, tag):
+        self.reader.writeline(tag.opening())
+        self.reader.open_block()
+        self.reader.parse_current_level()
+        self.reader.close_block()
+        self.reader.writeline(tag.closing())
+        
+    def write_tag_statement(self, tag, params):
+        self.reader.writeline(tag)
+
+class Tag:
+    tagId = ""
+    params = ""
+    def __init__(self, tagId, params):
+        self.tagId = tagId
+        self.params = params
+    def opening(self):
+        return ("<" + self.tagId + self.params + ">")
+    
+    def closing(self):
+        return ("</" + self.tagId + ">")    

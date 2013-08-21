@@ -16,7 +16,10 @@ class Reader:
     file = None
     lines = []
     output = []
-    cssDictionary = CssDictionary()
+    css = CssParser(self)
+    html = HtmlParser(self)
+    js = JavascriptParser(self)
+    plate = TemplateParser(self)
     def __init__(self, file):
         self.lines = [line.rstrip() for line in open(file)]
         self.level = 0
@@ -82,7 +85,15 @@ class Declaration:
         instance = get_instance_of(self.group + '.' + self.element.title())
         instance.parse(reader, self.params)
 
-def call_method(module, cls, method):
+def call_method(self, module, cls, method):
+    if module == 'css':
+        getattr(self.css, method)
+    elif module == 'html':
+        getattr(self.html, method)
+    elif module == 'js':
+        getattr(self.js, method)
+    elif module == 'plate':
+        getattr(self.plate, method)
 
 def main():
     file = "in.p2h"

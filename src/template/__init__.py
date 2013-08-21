@@ -1,5 +1,7 @@
 from lexical import Statement
 
+class TemplateParser():
+
 class Load(Statement):
     def tag(self, reader, params):
         return ""
