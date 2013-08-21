@@ -1,12 +1,53 @@
-py2html
+unyfy
 =======
 
-Simple python templating engine to HTML.
+A python templating engine.
 
-Why use py2html?
+What is unyfy
 =======
 
-The main difference between most used templates engines is that they separate html from the actual python templating code.
-Py2html uses the same syntax for creating an html block and a template block.
+Unyfy is a python templating engine and also is a css, html and javascript unifier with a similar syntax.
 
-This way, the template is actually far more readable.
+Examples speak more than words:
+
+    css.new_style(style):
+        if default
+            background-color=black
+        if hovered
+            background-color=blue
+    
+    css.h1.style = style
+    css.footer.style = style
+    
+    html.html:
+        html.body(id="hello"):
+            html.paragraph(id="demo"):
+                "This is a paragraph.
+            html.button(type="button", onclick="displayDate()"):
+                "Display Date
+        js.script:
+            def displayDate():
+                document.getElementById("demo").innerHTML=Date()
+    
+
+to HTML:
+
+    h1, footer {
+        background-color: black
+    }
+    h1, footer :hover {
+        background-color: blue
+    }
+    
+    <html>
+        <body id="hello">
+            <p id="demo">This is a paragraph.</p>
+            <button type="button", onclick="displayDate()">Display Date</button>
+        </body>
+    
+        <script>
+            function displayDate() {
+                document.getElementById("demo").innerHTML=Date()
+            }
+        </script>
+    </html>
