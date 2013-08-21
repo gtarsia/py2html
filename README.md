@@ -6,11 +6,11 @@ A python templating engine.
 What is unyfy
 =======
 
-Unyfy is a template engine, but also a web language.
-Unyfy translates css, html and js coding to a Python-like syntax.
+unyfy is a template engine, but also a web language.
+unyfy translates css, html and js coding to a Python-like syntax.
 The template engine has also the same syntax.
 
-A Unyfy code block can have parts of css, html, js and templating, but it will look like a single homogenic language.
+A unyfy code block can have parts of css, html, js and templating, but it will look like a single homogenic language.
 
 Examples speak more than words:
 
@@ -62,5 +62,5 @@ to HTML:
         </script>
     </html>
 
-Unyfy aims to make web code readable, thus easier to learn(in other words, making css, html, 
+unyfy aims to make web code readable, thus easier to learn(in other words, making css, html, 
 and js easier to learn at the same time), and fun.
