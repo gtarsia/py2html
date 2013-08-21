@@ -2,33 +2,33 @@ from lexical import Block
 from lexical import Statement
 
 class Html(Block):
-    manifest = ""
-    xmlns = ""
-    def open_block(self, params):
+    #manifest = ""
+    #xmlns = ""
+    def opening_tag(self, params):
         return "<html>"
-    def close_block(self):
+    def closing_tag(self):
         return "</html>"
 
 class Head(Block):
-    def open_block(self, params):
+    def opening_tag(self, params):
         return "<head>"
-    def close_block(self):
+    def closing_tag(self):
         return "</head>"
 
 class Body(Block):
-    def open_block(self, params):
+    def opening_tag(self, params):
         return "<body>"
-    def close_block(self):
+    def closing_tag(self):
         return "</body>"
 
 class Footer(Block):
-    def open_block(self, params):
+    def opening_tag(self, params):
         return "<body>"
-    def close_block(self):
+    def closing_tag(self):
         return "</body>"
 
 class Doctype(Statement):
-    def state(self, params):
+    def tag(self, params):
         return "<!DOCTYPE html>"
     
 def process_html():
