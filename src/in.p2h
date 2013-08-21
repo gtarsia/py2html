@@ -1,0 +1,18 @@
+css.define(style):
+    if default:
+        background-color=black
+    if hovered:
+        background-color=blue
+
+css.apply(style, tag=h1)
+
+html.html:
+    html.body(id=hello, style=css.bold):
+        html.paragraph(id=demo):
+            "This is a paragraph.
+        html.button(type=button, onclick="displayDate()):
+            "Display Date
+
+js.script:
+    def displayDate():
+        document.getElementById("demo").innerHTML=Date()

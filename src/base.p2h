@@ -1,0 +1,3 @@
+template.define(head)
+    html.head:
+        $Hello

@@ -1,48 +1,65 @@
 import re
+from css import CssDictionary
+from lexical import Line
 
-def get_declaration(line):
 
 def get_instance_of(cls):
     parts = cls.split('.')
     module = ".".join(parts[:-1])
     m = __import__( module )
     for comp in parts[1:]:
-        m = getattr(m, comp)            
-    return m
+        m = getattr(m, comp)
+    return m()
 
 class Reader:
     level = 0
     file = None
     lines = []
     output = []
+    cssDictionary = CssDictionary()
     def __init__(self, file):
-        self.f = open(file)
+        self.lines = [line.rstrip() for line in open(file)]
         self.level = 0
-        
-    def readline(self):
-        return self.lines.pop(0)
-        
+    
+    def is_indent_correct(self, indent):
+        return (indent == ' '*self.level*4)
+    
     def writeline(self, line):
-        self.output.append(line)
+        self.output.append(' '*self.level*4 + line)
         
     def eof(self):
-        return self.lines.count() > 0
+        return (not self.lines)
     
-    def open_block(self, params):
+    def open_block(self):
         self.level = self.level + 1
         
-    def close_block(self, params):
+    def close_block(self):
         self.level = self.level - 1
-        if self.level < 0:
+        if self.level < 0:  
             raise IndexError("Level tried to go below 0")
     
     def parse_nextline(self):
-        line = self.readline()
-        declaration = parse_declaration()
-        run_declaration(declaration, self)
-            
+        line = Line(self.lines.pop(0))
+        if line.empty():
+            self.writeline('')
+        elif re.search(r'\s+\"', line.line):
+            self.writeline(line.line)
+        else:
+            declaration = Declaration(line.line)
+            declaration.parse(self)
+    
+    def read_current_level(self):
+        block = []
+        current_level = self.level
+        line = Line(self.lines.pop(0))
+        while line.indent_level() >= current_level:
+            block.append(line.line)
+            line = Line(self.lines.pop(0))
+        self.lines.insert(0, line.line)
+        return block
+    
     def parse_current_level(self):
-        current_level = self.level()
+        current_level = self.level
         while not self.eof() and current_level == self.level:
             self.parse_nextline()
             
@@ -50,49 +67,29 @@ class Reader:
         while not self.eof():
             self.parse_nextline()
 
-def run_declaration(declaration, reader):
-    instance = get_instance_of(declaration.group + '.' + declaration.action)
-    instance.parse(reader, declaration.params)
-
-def parse_declaration(line):
-    declaration = Declaration
-    list = re.search('(\w+)\.(\w+)\(?([^)]*)\)?', line).groups()
-    declaration.group = list[0]
-    declaration.action = list[1]
-    declaration.params = list[2]
-    return 
-    
-class Parser:
-    def process_py2html(self, file):
-        reader = Reader(file)
-        reader.parse
-        return reader.output
-                        
-
 class Declaration:
     group = ""
     element = ""
     params = ""
-    def __init__(self, list):
+    def __init__(self, line):
+        print(line)
+        list = re.search('(\w+)\.(\w+)\(?([^)]*)\)?', line).groups()
         self.group = list[0]
         self.element = list[1]
         self.params = list[2]
+        
+    def parse(self, reader):
+        instance = get_instance_of(self.group + '.' + self.element.title())
+        instance.parse(reader, self.params)
 
-def load_template(file):
-    f = open(file)
-    for line in f:
-        re.findall('load.define()', line)
-        #define
-        #redefine
-        #
+def call_method(module, cls, method):
 
-
-
-            
 def main():
-    parser = Parser
-    html = parser.process_py2html("in.p2h")
-    return html
+    file = "in.p2h"
+    reader = Reader(file)
+    reader.parse()
+    print(reader.output)
+    return reader.output
 
 if __name__ == "__main__":
     main()

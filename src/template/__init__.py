@@ -1,7 +1,7 @@
 from lexical import Statement
 
 class Load(Statement):
-    def state(self, params):
+    def tag(self, reader, params):
         return ""
 '''class Inherit(Statement):
     def state(self, params):
