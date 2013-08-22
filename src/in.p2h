@@ -7,10 +7,10 @@ css.define(style):
 css.apply(style, tag=h1)
 
 html.html:
-    html.body(id=hello, style=css.bold):
-        html.paragraph(id=demo):
+    body(id=hello):
+        paragraph(id=demo):
             "This is a paragraph.
-        html.button(type=button, onclick="displayDate()):
+        button(type=button, onclick="displayDate()):
             "Display Date
 
 js.script:

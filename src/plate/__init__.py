@@ -1,7 +1,15 @@
 from lexical import Statement
 
 class TemplateParser():
-
+    reader = None
+    writer = None
+    mainParser = None
+    
+    def __init__(self, mainParser):
+        self.reader = mainParser.reader
+        self.writer = mainParser.writer
+        self.mainParser = mainParser
+    
 class Load(Statement):
     def tag(self, reader, params):
         return ""

@@ -28,7 +28,6 @@ class Line():
         self.line = line
     
     def indent_level(self):
-        print(self.line)
         match = re.match(r'(\s+)', self.line)
         if not match:
             return 0
