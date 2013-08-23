@@ -1,0 +1,25 @@
+main
+  css.
+    define:
+      !css-define(level >=
+    apply(): -> css.parse_apply()
+  html.html:
+    !html
+
+css-define
+  if ($pseudo-class):
+    !css-block(level >=
+    
+css-block
+  ($block) -> css.parse_define($pseudo-class, $block)
+
+html
+  html.
+    body($attributes): -> css.parse_body($attributes) 
+    header($attributes): -> css.parse_header($attributes)
+    footer($attributes): -> css.parse_footer($attributes)
+  js.script:
+    !js
+
+js
+  def (\s+): ->js.parse_define()

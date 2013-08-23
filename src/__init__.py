@@ -25,13 +25,13 @@ class MainParser:
     def parse(self):
         while not self.reader.eof():
             line = self.reader.next_unyfy_line()
-            if line.is_empty:
+            if line.is_empty():
                 self.writeline("")
-            elif line.indent_size != self.level:
+            elif line.indent_size() != self.level:
                 raise SyntaxError('Indent is incorrect')
             elif line.is_content_only():
                 self.writeline(line.content())
-            elif not line.is_comment:
+            elif not line.is_comment():
                 self.call_method(line.declaration)
         
     def call_method(self, declaration):
@@ -113,7 +113,7 @@ class Reader:
         block = []
         while not self.eof():
             line = self.next_unyfy_line()
-            if line.indent_size >= level:
+            if line.indent_size() >= level:
                 block.append(line.content())
             else:
                 break
@@ -127,57 +127,96 @@ class Reader:
             block.append(line.line)
             line = Line(self.lines.pop(0))
         self.lines.insert(0, line.line)
-        return block'''
+        return block''' 
+class Indent:
+    indent = ""
     
-class UnyfyLine:
-    is_empty = False
-    is_comment = False
-    indent_size = None
+    def __init__(self, indent):
+        self.indent = indent
+        
+    def size(self):
+        return self.indent.__len__()/4
+        
+    def is_valid(self):
+        return not (self.indent.__len__()/4) % 1
+    
+class LineType:
+    Declaration, Comment, ContentOnly, Empty = range(4)
+            
+class RawLine:
+    indent, content = None, ""
+    def __init__(self, line):
+        indent_string, self.content = re.match(r'(\s*)(.*)', line).groups()
+        self.indent = Indent(indent_string)
+        
+    def validate(self):
+        self.indent.validate()
+        if content
+
+class UnyfyLine(RawLine):
+    line_type = LineType.Comment
+    _indent_size = None
     declaration = None
     
     def __init__(self, line):
         print("Line read is: " + line)
-        indent, content = "", ""
-        indent, content = re.search(r'(\s*)(.*)', line).groups()
-        if not content:
-            self.is_empty = True
-        else:
-            self.validate_indent(indent)
-            self.declaration = Declaration(content)
-
-    def validate_indent(self, indent):
-        self.indent_size = indent.__len__()/4
-        if not isinstance(self.indent_size, int):
-            raise IndentationError('Indent should be a 4 multiple')
+        super(RawLine, UnyfyLine).__init__(line)
+        self._validate_line_type()
         
-    def is_content_only(self):
-        return (self.declaration.is_content_only)
+    def validate(self):
+        super(UnyfyLine, self).validate()
     
-    def content(self):
-        return (self.declaration.content)
+    def _validate_line_type(self):
+        if not self.content:
+            self.line_type = LineType.Empty
+        elif self.content[0] == '#':
+            self.line_type = LineType.Comment
+        elif self._validate_indent() and self.content[0] == '"':
+            self.line_type = LineType.ContentOnly
+        elif self._validate_declaration():
+            self.line_type = LineType.Declaration
+    
+    def _validate_declaration(self, raw_line):
+        declaration = Declaration(raw_line.content)
+        if not declaration.is_valid():
+            raise SyntaxError('Wrong declaration')
+        else:
+            self.declaration = declaration
+            return True
+    
+    def is_declaration(self):
+        return self.line_type == LineType.Declaration
+    def is_comment(self):
+        return self.line_type == LineType.Comment
+    def is_content_only(self):
+        return self.line_type == LineType.ContentOnly
+    def is_empty(self):
+        return self.line_type == LineType.Empty
+
+
+        
 
 class Declaration:
     cls = ""
     method = ""
     param_list = []
-    is_content_only = False
-    content = ""
+    _is_valid = True
     def __init__(self, content):
         self.content = content
-        list = re.match('(\w+)\.(\w+)\(?([^)]*)\)?', content)
+        list = re.match('(\w*)\.(\w*)\(?([^)]*)\)?', content)
         if list:
             list = list.groups()
-            self.validate_declaration(list[0], list[1])
-            param_string = list[2]
-            self.param_list = param_string.split(', ')
-        elif '"' in content:
-            self.is_content_only = True
-    
-    def validate_declaration(self, cls, method):
-        self.cls = cls
-        self.method = method
-        if (self.cls and not self.method) or (not self.cls and self.method):
-            raise SyntaxError('Invalid declaration')
+            self.cls = list[0]
+            self.method = list[1]
+            self._validate_declaration(self.cls, self.method)
+            param_list = list[2].split(', ')
+     
+    def _validate_declaration(self, cls, method):
+        if not cls or not method:
+            self.is_valid = False
+
+    def is_valid(self):
+        return self.is_valid
 
 def main():
     file = "in.p2h"
