@@ -147,7 +147,7 @@ class UnyfyLine:
 
     def validate_indent(self, indent):
         self.indent_size = indent.__len__()/4
-        if isinstance(self.indent_size, int):
+        if not isinstance(self.indent_size, int):
             raise IndentationError('Indent should be a 4 multiple')
         
     def is_content_only(self):
