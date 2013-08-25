@@ -1,4 +1,5 @@
 import re
+from __init__ import RawLine
 
 class LexicalRule:
     def parse(self, group, action, reader):
@@ -21,6 +22,40 @@ class Statement(LexicalRule):
         raise NotImplementedError("Should have implemented this")
     def parse(self, reader, params):
         reader.writeline(self.tag(params))
+
+class GrammarLine(RawLine):
+    def 
+
+class GrammarReader:
+    lines = []
+    
+    def __init__(self, file):
+        self.lines = [line.rstrip() for line in open(file)]
+        
+    def read_grammar_line(self):
+        return (GrammarLine(self.lines.pop(0)))
+
+class SyntaxForest:
+    
+    trees = []
+    grammar_reader = None
+    
+    def __init__(self, file):
+        self.grammar_reader = GrammarReader(file)
+        while not self.grammar_reader.eof():
+            line = self.grammar_reader.read_grammar_line()
+            line.
+            
+
+class SyntaxTree:
+    grammar_reader = None
+    def __init__(self):
+    
+    
+    
+class SyntaxNode:
+    token = ""
+    children = []
 
 class Line():
     line = ""

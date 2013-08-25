@@ -3,18 +3,22 @@ from css import CssParser
 from html import HtmlParser
 from js import JavascriptParser
 from plate import TemplateParser
+from lexical import SyntaxTree
 from lexical import Line 
 
 class MainParser:
     level = 0
     reader = None
     writer = None
+    tree = None
     css = None
     html = None
     js = None
     plate = None
+    syntax_forest = None
     
     def __init__(self, file):
+        self.syntax_forest = SyntaxForest('grammar.grm')
         self.reader = Reader(file)
         self.writer = Writer()
         self.css = CssParser(self)
@@ -23,6 +27,8 @@ class MainParser:
         self.plate = TemplateParser(self)
 
     def parse(self):
+        #tokenize de lineas, entonces, cada línea se va a tokenizar...
+        
         while not self.reader.eof():
             line = self.reader.next_unyfy_line()
             if line.is_empty():
@@ -33,7 +39,7 @@ class MainParser:
                 self.writeline(line.content())
             elif not line.is_comment():
                 self.call_method(line.declaration)
-        
+ 
     def call_method(self, declaration):
         if declaration.cls == 'css':
             getattr(self.css, 'parse_' + declaration.method)(declaration.param_list)
@@ -100,6 +106,16 @@ class Reader:
         if self.level < 0:  
             raise IndexError("Level tried to go below 0")'''
     
+    def next_line_tokens(self):
+        return self.tokenize(self.lines.pop(0))
+    
+    def tokenize(self):
+        tokens = []
+        
+    
+    
+    
+    
     def next_unyfy_line(self):
         return UnyfyLine(self.lines.pop(0))
     
@@ -144,6 +160,7 @@ class LineType:
     Declaration, Comment, ContentOnly, Empty = range(4)
             
 class RawLine:
+    indent_size = None
     indent, content = None, ""
     def __init__(self, line):
         indent_string, self.content = re.match(r'(\s*)(.*)', line).groups()
@@ -151,7 +168,6 @@ class RawLine:
         
     def validate(self):
         self.indent.validate()
-        if content
 
 class UnyfyLine(RawLine):
     line_type = LineType.Comment

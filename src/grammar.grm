@@ -1,25 +1,36 @@
-main
+Main
   css.
-    define:
-      !css-define(level >=
-    apply(): -> css.parse_apply()
-  html.html:
-    !html
+    define: !CssDefine
+    apply: >css.apply
+  html
+    .
+      html: !Html
 
-css-define
-  if ($pseudo-class):
-    !css-block(level >=
-    
-css-block
-  ($block) -> css.parse_define($pseudo-class, $block)
+CssDefine
+  if
+    $.+
+      : !css-block
 
-html
-  html.
-    body($attributes): -> css.parse_body($attributes) 
-    header($attributes): -> css.parse_header($attributes)
-    footer($attributes): -> css.parse_footer($attributes)
+CssBlock
+  $.+ >css.define()
+
+Html
+  html
+    .
+      body
+        $(.*)
+          : >html.body
+      header
+        $(.*)
+          : >html.header
+      footer
+        $(.*)
+          : >css.footer
   js.script:
-    !js
+    !Js
 
-js
-  def (\s+): ->js.parse_define()
+Js
+  def 
+    $(.*)
+      : >js.define
+    $.+ >main.write
