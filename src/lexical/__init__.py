@@ -1,99 +1,91 @@
 import re
 from lines.reader import GrammarReader
+from lines import RawLine, MethodCall
 
 
+class GrammarTreeDefinition:
+    tree_name = ""
+    token_list = []
+    def __init__(self, id, token_list):
+        self.id = id
+        self.token_list = token_list
 
-class LexicalRule:
-    def parse(self, group, action, reader):
-        raise NotImplementedError("Should have implemented this")
+class GrammarTreeDictionary:
+    definitions = []
+    
+    def add_definition(self, tree_name, token_list):
+        self.definitions.append(GrammarTreeDefinition(tree_name, token_list))
 
-class Block(LexicalRule):
-    def opening_tag(self, params):
-        raise NotImplementedError("Should have implemented this")
-    def closing_tag(self):
-        raise NotImplementedError("Should have implemented this")
-    def parse(self, reader, params):
-        reader.writeline(self.opening_tag(params))
-        reader.open_block()
-        reader.parse_current_level()
-        reader.close_block()
-        reader.writeline(self.closing_tag())
+class NodeStack:
+    nodes = []
+    
+    def push(self, node):
+        self.nodes.append(node)
+        
+    def pop(self):
+        return self.nodes.pop()
 
-class Statement(LexicalRule):
-    def tag(self, params):
-        raise NotImplementedError("Should have implemented this")
-    def parse(self, reader, params):
-        reader.writeline(self.tag(params))
+class GrammarParser():
+    tree_dictionary = GrammarTreeDictionary()
+    
+    def __init__(self, file):
+        reader = GrammarReader(file)
+        self._parse_definitions(reader)
+    
+    def dictionary(self):
+        return self.tree_dictionary
+
+    def _parse_definitions(self, reader):
+        while not reader.eof():
+            line = reader.read_line()
+            if line.level() > 0:
+                raise SyntaxError('Grammar tree has wrong level')
+            else:
+                tree = line.content
+                token = self._parse_tree_definiens(reader)
+                self.tree_dictionary.add_definition(tree, token)
+                
+    def _parse_tree_definiens(self, reader):
+        definiens = []
+        while not reader.eof():
+            line = reader.read_line()
+            if line.level() > 0:
+                definiens.append(line)
+            else:
+                reader.push_line(line)
+                break
+        return definiens   
+
+    def _read_line(self):
+        return (GrammarToken(self.reader.read_line()))
 
 class TreeNode:
-    id = ""
+    comparator = None
     
     def __init__(self, id):
-        self.id = id
+        if '$' in id:
+            id.pop(0)
+            self.comparator = RegexComparator(id)
+        else:
+            self.comparator = StringComparator(id)
+    
+    def match(self, str):
+        return self.comparator.compare(str)
     
     def traverse(self, tokens):
         raise NotImplementedError()
 
-class SyntaxTreeRoot(TreeNode):
-    children = []
-    forest = None
+class ParentNode(TreeNode):
+    children = {}
     
-    def build(self, reader):
-        while not reader.eof():
-            grammar_line = reader.read_line()
-            if grammar_line.indent_level() < 1:
-                reader.push_line(grammar_line)
-                break
-            else:
-                node = self.generate_node(grammar_line)
-                self.children[node.id] = node
-        return self
-    
-    def generate_node(self, grammar_line):
-        if grammar_line.has_method_call():
-            grammar_line.content.pop(0)
-            return MethodLeaf(grammar_line.content)
-        elif grammar_line.has_tree_reference():
-            grammar_line.content.pop(0)
-            return SyntaxTreeRoot(grammar_line.content)
-    
-class ForestRoot(SyntaxTreeRoot):
-    
-    def __init__(self, reader):
-        self.id = 'Main'
-        self.build(reader)
-
-class SyntaxForest:
-    trees = {}
-    
-    def __init__(self, file):
-        self.build(file)
-
-    def build(self, file):
-        reader = GrammarReader(file)
-        line = reader.read_line()
-        if line.content != 'Main':
-            raise SyntaxError('Wrong Grammar: Root should be called Main')
-        self.trees['Main'] = ForestRoot(reader)
-        while not reader.eof():
-            grammar_line = reader.read_line()
-            self.tree_root(grammar_line.content).build(reader)
-    
-    def traverse(self, tokens):
-        self.root().traverse(tokens)
-        
-    def tree_root(self, tree):
-        return self.trees[tree]
-    
-    def forest_root(self):
-        return self.trees['Main']
-    
+    def add_child(self, node):
+        self.children[node.id] = node
+                
 class MethodLeaf(TreeNode):
-    instance = None
-    method= ''
+    cls, method = "", ""
     
-    def __init__(self, instance, method):
-        self.instance = instance
+    def __init__(self, cls, method):
+        self.cls = cls
         self.method = method
     
     def traverse(self, tokens):
@@ -101,48 +93,81 @@ class MethodLeaf(TreeNode):
     
     def run_method(self, params):
         None#Call method
-
-class SyntaxBranch(TreeNode):
-    children = []
-    def compare(self):
-        raise NotImplementedError() 
     
-    def traverse(self, tokens):
-        self.children[tokens.pop(0)].traverse(tokens)
+class TreeReferenceLeaf(TreeNode):
+    tree = None
     
-class RegexBranch(SyntaxBranch):
-    regex = ''
-    def __init__(self, regex):
-        self.regex = regex
+    def traverse(self, ):
+        None
         
-    def compare(self, string):
-        return re.match(self.regex, string)
-
-class StringBranch(SyntaxBranch):
-    string = ''
+class StringComparator:
+    string = ""
+    
     def __init__(self, string):
         self.string = string
         
     def compare(self, string):
         return self.string == string
 
-class Line():
-    line = ""
-    def __init__(self, line):
-        self.line = line
+class RegexComparator:
+    pattern = ""
     
-    def indent_level(self):
-        match = re.match(r'(\s+)', self.line)
-        if not match:
-            return 0
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def compare(self, string):
+        return bool(re.match(self.pattern, string))
+
+class Tree(ParentNode):
+    syntax_forest = None
+    
+    def __init__(self, syntax_forest):
+        self.syntax_forest = syntax_forest 
+    
+    def build(self, token_list):
+        level = 1
+        parent = self.forest
+        node_stack = NodeStack()
+        while token_list:
+            token = token_list.pop(0)
+            node = self._generate_node(token)
+            if token.indent_level() > level:
+                node_stack.push(parent)
+                parent = node
+                level = level + 1
+            elif token.indent_level() < level:
+                node = parent
+                parent = node_stack.pop()
+                level = level - 1
+            else:
+                parent.add_node(node)
+    
+    def _generate_node(self, token):
+        node = None
+        if token.has_method_call():
+            node = MethodLeaf(token.method_call())
+        elif token.has_tree_reference():
+            node = TreeReferenceLeaf(self.forest.tree(token.tree_name()))
         else:
-            indent = match.groups()[0]
-            level = indent.__len__()
-            if not isinstance(level, int):
-                raise SyntaxError("Wrong indentation")
-            return level
+            node = ParentNode(token.content)
+        return node
+
+class SyntaxForest:
+    roots = {}
     
-    def empty(self):
-        return self.line.__len__() == 0
-        
-      
+    def __init__(self, file):
+        self.build(file)
+
+    def build(self, file):
+        dictionary = GrammarParser(file).dictionary()
+        for definition in dictionary.definitions:
+            self.roots[id] = Tree(self)
+        for definition in dictionary.definitions:
+            for token_list in definition:
+                self.roots[id].build(token_list)
+  
+    def traverse(self, tokens):
+        self.root().traverse(tokens)
+
+    def tree(self, tree):
+        return self.roots[tree]

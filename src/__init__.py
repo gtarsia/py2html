@@ -4,7 +4,8 @@ from html import HtmlParser
 from js import JavascriptParser
 from plate import TemplateParser
 from lexical import SyntaxForest
-from lexical import Line
+from lines.reader import Reader
+from lines import RawLine
 
 class Translator:
     level = 0
@@ -87,10 +88,10 @@ class MainParser:
         self.reader.read_entire_level(self.level)
         block = []
         current_level = self.level
-        line = Line(self.lines.pop(0))
+        line = RawLine(self.lines.pop(0))
         while line.indent_level() >= current_level:
             block.append(line.line)
-            line = Line(self.lines.pop(0))
+            line = RawLine(self.lines.pop(0))
         self.lines.insert(0, line.line)
         return block
     

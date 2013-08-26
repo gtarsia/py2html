@@ -1,4 +1,4 @@
-from lexical import Statement
+from lexical.structure import Statement
 
 class TemplateParser():
     reader = None

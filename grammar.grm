@@ -9,7 +9,7 @@ Main
 CssDefine
   if
     $.+
-      : !css-block
+      : !CssBlock
 
 CssBlock
   $.+ >css.define()

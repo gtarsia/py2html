@@ -6,24 +6,33 @@ class RawLine(object):
         indent_string, self.content = re.match(r'(\s*)(.*)', line).groups()
         self.indent = Indent(indent_string, 4)
 
-    def indent_level(self):
-        self.indent.level()
+    def level(self):
+        return self.indent.level()
         
     def validate(self):
         self.indent.validate()
-         
-class GrammarLine(RawLine):
-    
+
+class GrammarToken(RawLine):
     def __init__(self, line):
-        super(GrammarLine, self).__init__(line)
+        super(GrammarToken, self).__init__(line)
         self.indent.indent_size = 2
         
     def has_method_call(self):
-        return '>' == self.content[0]
+        return '>' in self.content
 
     def has_tree_reference(self):
-        return '!' == self.content[0]
-            
+        return '!' in self.content
+    
+    def tree_reference(self):
+        if not '!' in self.content:
+            raise BaseException("Don't create this node if the token doesnt reference a tree")
+        else:
+            return self.content.split('!', 1)[1]
+        
+    def method_call(self):
+        return MethodCall(self.content.split('>', 1)[1])
+
+
 class Indent:
     indent = ""
     indent_size = 4
@@ -81,7 +90,7 @@ class UnyfyLine(RawLine):
     def is_empty(self):
         return self.line_type == LineType.Empty
 
-class Declaration:
+class MethodCall:
     cls = ""
     method = ""
     param_list = []

@@ -1,5 +1,5 @@
-from lexical import Block
-from lexical import Statement
+from lexical.structure import Block
+from lexical.structure import Statement
 
 class HtmlParser():
     reader = None
