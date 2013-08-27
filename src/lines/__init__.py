@@ -32,7 +32,9 @@ class GrammarToken(RawLine):
     def method_call(self):
         return MethodCall(self.content.split('>', 1)[1])
 
-
+    def pattern(self):
+        return re.split('!|>', self.content)[0]
+    
 class Indent:
     indent = ""
     indent_size = 4

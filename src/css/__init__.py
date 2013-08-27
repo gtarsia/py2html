@@ -19,7 +19,7 @@ class CssParser:
     mainParser = None
     
     def __init__(self, mainParser):
-        self.reader = mainParser.reader
+        self.reader = global glo
         self.writer = mainParser.writer
         self.mainParser = mainParser
     

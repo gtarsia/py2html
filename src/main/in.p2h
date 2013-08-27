@@ -1,9 +1,0 @@
-template.load("base.p2h")
-
-html.doctype
-html.html:
-    template.define(body):
-        html.body:
-            html.paragraph:
-    	html.header:
-  
