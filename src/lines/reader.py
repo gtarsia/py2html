@@ -6,7 +6,7 @@ Created on 25/08/2013
 from lines import UnyfyLine, GrammarToken
 
 
-class Reader:
+class Reader(object):
     file = None
     lines = []
     
@@ -38,13 +38,13 @@ class Reader:
 
 class GrammarReader(Reader):
 
-    def read_line(self):
+    def read_token(self):
         line = super(GrammarReader, self).read_line()
         print(line)
         return GrammarToken(line)
     
-    def push_line(self, line):
-        super(GrammarReader, self)
+    def push_token(self, token):
+        super(GrammarReader, self).push_line(token.content)
 
 class UnyfyReader(Reader):
     

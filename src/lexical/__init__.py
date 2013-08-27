@@ -1,6 +1,6 @@
 import re
 from lines.reader import GrammarReader
-from lines import RawLine, MethodCall
+from lines import RawLine, MethodCall, GrammarToken
 
 
 class GrammarTreeDefinition:
@@ -37,24 +37,24 @@ class GrammarParser():
 
     def _parse_definitions(self, reader):
         while not reader.eof():
-            line = reader.read_line()
-            if line.level() > 0:
+            token = reader.read_token()
+            if token.level() > 0:
                 raise SyntaxError('Grammar tree has wrong level')
             else:
-                tree = line.content
-                token = self._parse_tree_definiens(reader)
-                self.tree_dictionary.add_definition(tree, token)
+                tree = token.content
+                token_list = self._parse_tree_definiens(reader)
+                self.tree_dictionary.add_definition(tree, token_list)
                 
     def _parse_tree_definiens(self, reader):
-        definiens = []
+        token_list = []
         while not reader.eof():
-            line = reader.read_line()
-            if line.level() > 0:
-                definiens.append(line)
+            token = reader.read_token()
+            if token.level() > 0:
+                token_list.append(token)
             else:
-                reader.push_line(line)
+                reader.push_token(token)
                 break
-        return definiens   
+        return token_list   
 
     def _read_line(self):
         return (GrammarToken(self.reader.read_line()))
@@ -126,21 +126,21 @@ class Tree(ParentNode):
     
     def build(self, token_list):
         level = 1
-        parent = self.forest
+        parent = self.syntax_forest
         node_stack = NodeStack()
         while token_list:
             token = token_list.pop(0)
             node = self._generate_node(token)
-            if token.indent_level() > level:
+            if token.level() > level:
                 node_stack.push(parent)
                 parent = node
                 level = level + 1
-            elif token.indent_level() < level:
+            elif token.level() < level:
                 node = parent
                 parent = node_stack.pop()
                 level = level - 1
             else:
-                parent.add_node(node)
+                parent.add_child(node)
     
     def _generate_node(self, token):
         node = None
@@ -163,11 +163,11 @@ class SyntaxForest:
         for definition in dictionary.definitions:
             self.roots[id] = Tree(self)
         for definition in dictionary.definitions:
-            for token_list in definition:
-                self.roots[id].build(token_list)
+            self.roots[id].build(definition.token_list)
   
     def traverse(self, tokens):
         self.root().traverse(tokens)
 
     def tree(self, tree):
         return self.roots[tree]
+    
