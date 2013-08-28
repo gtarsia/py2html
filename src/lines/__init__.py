@@ -1,5 +1,57 @@
 import re
 
+class UnyfyStatement:
+    cls, method, params = "", "", ""
+    _is_valid = True
+    
+    def __init__(self, content):
+        self.content = content
+        list = re.match('(\w*)\.(\w*)\(?([^)]*)\)?', content)
+        if list:
+            list = list.groups()
+            self.cls = list[0]
+            self.method = list[1]
+            self._validate_declaration(self.cls, self.method)
+            self.params = list[2].split(', ')
+    
+    def _validate_declaration(self, cls, method):
+        if not cls or not method:
+            self.is_valid = False
+
+    def has_definition(self):
+        None
+        
+    def is_valid(self):
+        return self.is_valid
+    
+class UnyfyDefinition():
+    statement, block = None, []
+    
+    def __init__(self, statement, block):
+        self.statement = statement
+        self.block = block
+        
+    def is_definition(self):
+
+class YAUnyfyReader:
+    
+    def __iter__(self):
+        return self
+    
+    def next(self):
+        statement = self.read_statement()
+        if statement.has_definition():
+            definition = self.read_definition()
+            return UnyfyDefinition(statement, definition)
+        else:
+            return statement
+    
+    def _read_definition(self):
+        None
+    
+    def _is_block(self, line):
+        return line.rstrip()[-1:]
+
 class RawLine(object):
     indent, content = None, ""
     def __init__(self, line):
@@ -30,7 +82,7 @@ class GrammarToken(RawLine):
             return self.content.split('!', 1)[1]
         
     def method_call(self):
-        return MethodCall(self.content.split('>', 1)[1])
+        return UnyfyStatement(self.content.split('>', 1)[1])
 
     def pattern(self):
         return re.split('!|>', self.content)[0]
@@ -55,7 +107,7 @@ class LineType:
 class UnyfyLine(RawLine):
     line_type = LineType.Comment
     _indent_size = None
-    declaration = None
+    statement = None
     
     def __init__(self, line):
         print("Line read is: " + line)
@@ -75,15 +127,15 @@ class UnyfyLine(RawLine):
         elif self._validate_declaration():
             self.line_type = LineType.Declaration
     
-    def _validate_declaration(self, raw_line):
-        declaration = Declaration(raw_line.content)
-        if not declaration.is_valid():
+    def _validate_statement(self, raw_line):
+        statement = UnyfyStatement(raw_line.content)
+        if not statement.is_valid():
             raise SyntaxError('Wrong declaration')
         else:
-            self.declaration = declaration
+            self.statement = statement
             return True
     
-    def is_declaration(self):
+    def is_statement(self):
         return self.line_type == LineType.Declaration
     def is_comment(self):
         return self.line_type == LineType.Comment
@@ -92,24 +144,3 @@ class UnyfyLine(RawLine):
     def is_empty(self):
         return self.line_type == LineType.Empty
 
-class MethodCall:
-    cls = ""
-    method = ""
-    param_list = []
-    _is_valid = True
-    def __init__(self, content):
-        self.content = content
-        list = re.match('(\w*)\.(\w*)\(?([^)]*)\)?', content)
-        if list:
-            list = list.groups()
-            self.cls = list[0]
-            self.method = list[1]
-            self._validate_declaration(self.cls, self.method)
-            param_list = list[2].split(', ')
-    
-    def _validate_declaration(self, cls, method):
-        if not cls or not method:
-            self.is_valid = False
-
-    def is_valid(self):
-        return self.is_valid

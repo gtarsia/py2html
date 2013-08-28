@@ -55,18 +55,9 @@ class UnyfyReader(Reader):
         line = super(UnyfyReader, self).read_line()
         tokens = re.findall(r'(?:[(][^)]*[)])|\w+|\S', line)
         return tokens
-    
-class ReaderBorg(UnyfyReader):
-    __shared_state = {}
-    def __init__(self):
-        self.__dict__ = self.__shared_state
                     
 class Writer(object):
     lines = []
     def writeline(self, line):
         self.lines.append(line)
-        
-class WriterBorg(Writer):
-    __shared_state = {}
-    def __init__(self):
-        self.__dict__ = self.__shared_state
+

@@ -1,11 +1,26 @@
 import re
-from lines import RawLine
+from lines import RawLine, YAUnyfyReader
 from reader import UnyfyReader, Writer
 from tree import SyntaxForest
 
 class ReaderWriter(UnyfyReader, Writer):
     None
     
+class YAUnyfyParser:
+    
+    def __init__(self):
+        None
+        
+    def parse(self, file):
+        for statement in YAUnyfyReader(file):
+            self.forest.
+            
+class UnyfyTree:
+    
+    def __init__(self):
+        
+    def build(self, file):
+
 class UnyfyParser:
     level = 0
     reader_writer = None
@@ -15,9 +30,7 @@ class UnyfyParser:
     
     def __init__(self, file):
         self.syntax_forest = SyntaxForest('grammar.grm')
-        self.reader = ReaderBorg()
         self.reader.open(file)
-        self.writer = WriterBorg()
 
     def translate(self):
         output = []
