@@ -6,9 +6,10 @@ class TemplateParser():
     mainParser = None
     
     def __init__(self, mainParser):
-        self.reader = mainParser.reader
+        None
+    ''' self.reader = mainParser.reader
         self.writer = mainParser.writer
-        self.mainParser = mainParser
+        self.mainParser = mainParser'''
     
 class Load(Statement):
     def tag(self, reader, params):

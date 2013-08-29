@@ -1,7 +1,16 @@
 import re
-from lines import RawLine, MethodCall, GrammarToken
-from reader import GrammarReader
+from lines import RawLine, GrammarToken
+from reader import Reader
 
+class GrammarReader(Reader):
+
+    def read_token(self):
+        line = super(GrammarReader, self).read_line()
+        return GrammarToken(line)
+    
+    def push_token(self, token):
+        super(GrammarReader, self).push_line(token.content)
+        
 class GrammarTreeDefinition:
     tree_name = ""
     token_list = []

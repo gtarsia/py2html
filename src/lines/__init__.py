@@ -31,27 +31,6 @@ class UnyfyDefinition():
         self.statement = statement
         self.block = block
         
-    def is_definition(self):
-
-class YAUnyfyReader:
-    
-    def __iter__(self):
-        return self
-    
-    def next(self):
-        statement = self.read_statement()
-        if statement.has_definition():
-            definition = self.read_definition()
-            return UnyfyDefinition(statement, definition)
-        else:
-            return statement
-    
-    def _read_definition(self):
-        None
-    
-    def _is_block(self, line):
-        return line.rstrip()[-1:]
-
 class RawLine(object):
     indent, content = None, ""
     def __init__(self, line):
@@ -63,6 +42,12 @@ class RawLine(object):
         
     def validate(self):
         self.indent.validate()
+        
+    def is_block(self):
+        return self.content[-1:] == ':'
+    
+    def empty(self):
+        return not self.content
 
 class GrammarToken(RawLine):
     def __init__(self, line):

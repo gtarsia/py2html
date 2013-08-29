@@ -7,40 +7,50 @@ class HtmlParser():
     mainParser = None
     
     def __init__(self, mainParser):
-        self.reader = mainParser.reader
+        None
+        '''self.reader = mainParser.reader
         self.writer = mainParser.writer
-        self.mainParser = mainParser
+        self.mainParser = mainParser'''
     
     def parse_html(self, param_list):
-        self.write_tag_block(Tag("html", param_list))
+        None
+        #return Tag("html", param_list)
         
     def parse_body(self, param_list):
-        self.write_tag_block(Tag("body", param_list))
+        None
+        #self.write_tag_block(Tag("body", param_list))
         
     def parse_head(self, param_list):
-        self.write_tag_block(Tag("head", param_list))
+        None
+        #self.write_tag_block(Tag("head", param_list))
         
     def parse_doctype(self, param_list):
-        self.write_tag_statement(Tag("!DOCTYPE", param_list))
+        None
+        #self.write_tag_statement(Tag("!DOCTYPE", param_list))
         
     def parse_footer(self, param_list):
-        self.write_tag_block(Tag("footer", param_list))
+        None
+        #self.write_tag_block(Tag("footer", param_list))
     
     def parse_paragraph(self, param_list):
-        self.write_tag_block(Tag("p", param_list))
+        None
+        #self.write_tag_block(Tag("p", param_list))
     
     def parse_button(self, param_list):
-        self.write_tag_block(Tag("button", param_list))
+        None
+        #self.write_tag_block(Tag("button", param_list))
 
     def write_tag_block(self, tag):
-        self.writer.writeline(tag.opening())
-        self.mainParser.open_block()
-        self.mainParser.parse()
-        self.mainParser.close_block()
-        self.writer.writeline(tag.closing())
+        None
+        #self.writer.writeline(tag.opening())
+        #self.mainParser.open_block()
+        #self.mainParser.parse()
+        #self.mainParser.close_block()
+        #self.writer.writeline(tag.closing())
         
     def write_tag_statement(self, tag, params):
-        self.writer.writeline(tag)
+        None
+        #self.writer.writeline(tag)'''
 
 class Tag:
     tagId = ""

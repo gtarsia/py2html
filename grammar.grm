@@ -1,10 +1,10 @@
 Main
-  css.
-    define: !CssDefine
-    apply: >css.apply
-  html
-    .
-      html: !Html
+  css: !Css
+  html: !Html
+
+Css
+  define: !CssDefine
+  apply: >css.apply
 
 CssDefine
   if
@@ -12,20 +12,18 @@ CssDefine
       : !CssBlock
 
 CssBlock
-  $.+ >css.define()
+  $.+ >css.define
 
 Html
-  html
-    .
-      body
-        $(.*)
-          : >html.body
-      header
-        $(.*)
-          : >html.header
-      footer
-        $(.*)
-          : >css.footer
+  body
+    $(.*)
+      : >html.body
+  head
+    $(.*)
+      : >html.head
+  footer
+    $(.*)
+      : >html.footer
   js.script:
     !Js
 

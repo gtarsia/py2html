@@ -142,6 +142,7 @@ class SyntaxForest:
             self.roots[definition.tree_name].build(definition.token_list)
   
     def get_method(self, declaration):
+        meth = None
         if declaration.cls == 'css':
             meth = getattr(self.css, 'parse_' + declaration.method)
         elif declaration.cls == 'html':

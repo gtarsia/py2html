@@ -1,27 +1,94 @@
-import re
-from lines import RawLine, YAUnyfyReader
-from reader import UnyfyReader, Writer
 from tree import SyntaxForest
+from lines import RawLine
 
-class ReaderWriter(UnyfyReader, Writer):
-    None
+class UnyfyNode():
+    raw_line = None
+    children = None
     
+    def __init__(self, raw_line):
+        self.children = []
+        self.raw_line = raw_line
+
+    def adopt(self, node):
+        self.children.append(node)    
+
+    def has_children(self):
+        return bool(self.children)
+
+class Stack:
+    stack = None
+    
+    def __init__(self, node):
+        self.stack = []
+        self.stack.append(node)
+        
+    def pop(self):
+        return self.stack.pop()
+    
+    def push(self, node):
+        return self.stack.append(node)
+    
+    def last(self):
+        return self.stack[-1]
+    
+    def level(self):
+        return len(self.stack) - 1
+
+class UnyfyTree(UnyfyNode):
+    def __init__(self, file):
+        super(UnyfyTree, self).__init__(RawLine(""))
+        self.parse_file(file)
+        
+    def parse_file(self, file):
+        stack = Stack(self)
+        for line in YAReader(file):
+            if line.level() < stack.level():
+                if not stack.last().has_children(): 
+                    raise SyntaxError('unyfy file wrong syntax')
+                while line.level() < stack.level():
+                    stack.pop()
+            block = UnyfyNode(line)
+            stack.last().adopt(block)
+            if line.is_block():
+                stack.push(block)
+        
+class YAReader(object):
+    file = None
+    lines = []
+    
+    def __init__(self, file):
+        self.open(file)
+               
+    def open(self, file):
+        self.lines = [line.rstrip() for line in open(file)]
+    
+    def eof(self):
+        return (not self.lines)
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.eof():         # threshhold terminator
+            raise StopIteration 
+        else:
+            line = RawLine("")
+            while line.empty() and not self.eof():
+                if self.eof():
+                    raise StopIteration
+                line = RawLine(self.lines.pop(0))
+            return line
+
 class YAUnyfyParser:
+    syntax_forest = SyntaxForest('grammar.grm')
+    unyfy_tree = None
     
-    def __init__(self):
-        None
+    def __init__(self, file):
+        self.unyfy_tree = UnyfyTree(file)
         
-    def parse(self, file):
-        for statement in YAUnyfyReader(file):
-            self.forest.
-            
-class UnyfyTree:
-    
-    def __init__(self):
+    def translate(self):
         
-    def build(self, file):
-
-class UnyfyParser:
+'''class UnyfyParser:
     level = 0
     reader_writer = None
     tree = None
@@ -65,11 +132,11 @@ class UnyfyParser:
         self.writer.writeline(line)
     
     def writeline(self, line):
-        self.writer.writeline(' '*4*self.level + line)
+        self.writer.writeline(' '*4*self.level + line)'''
 
 def main():
     file = "in.p2h"
-    parser = UnyfyParser(file)
+    parser = YAUnyfyParser(file)
     return parser.translate()
 
 if __name__ == "__main__":

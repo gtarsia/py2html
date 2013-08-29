@@ -5,7 +5,6 @@ Created on 25/08/2013
 '''
 from lines import UnyfyLine, GrammarToken
 import re
-from __init__ import Writer
 
 class Reader(object):
     file = None
@@ -40,14 +39,24 @@ class Reader(object):
             line = self.lines.pop(0)
         return (line)
 
-class GrammarReader(Reader):
 
-    def read_token(self):
-        line = super(GrammarReader, self).read_line()
-        return GrammarToken(line)
+class YAUnyfyReader(Reader):
     
-    def push_token(self, token):
-        super(GrammarReader, self).push_line(token.content)
+    def __iter__(self):
+        return self
+    
+    def next(self):
+        line = YAUnyfyLine(self.read_line())
+        while not line.empty():
+            line = YAUnyfyLine(self.read_line())
+        return line
+    
+    def _read_definition(self):
+        None
+    
+    def _is_block(self, line):
+        return line.rstrip()[-1:]
+
 
 class UnyfyReader(Reader):
     

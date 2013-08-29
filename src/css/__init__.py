@@ -19,23 +19,25 @@ class CssParser:
     mainParser = None
     
     def __init__(self, mainParser):
-        self.reader = global glo
-        self.writer = mainParser.writer
-        self.mainParser = mainParser
+        None
+        #self.writer = mainParser.writer
+        #self.mainParser = mainParser
     
     def parse_define(self, param_list):
-        self.mainParser.open_block()
+        None
+        '''self.mainParser.open_block()
         block_list = self.mainParser.read_current_level()
         self.mainParser.close_block()
         block = "\n".join(line for line in block_list)
-        self.dictionary.define(param_list[0], block)
+        self.dictionary.define(param_list[0], block)'''
 
     def parse_apply(self, params):
-        apply_params = CssApplyStyleParams(params)
+        None
+        '''apply_params = CssApplyStyleParams(params)
         styleDef = self.dictionary.get_definition(apply_params.style)
         selectors = apply_params.selectors
         while selectors:
-            self.writer.writeline(CssStyleBlock(styleDef, selectors.pop(0)).block())
+            self.writer.writeline(CssStyleBlock(styleDef, selectors.pop(0)).block())'''
 
     def split(self, params):
         return [x.strip() for x in params.split(',')]

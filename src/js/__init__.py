@@ -6,7 +6,11 @@ class JavascriptParser:
     mainParser = None
     
     def __init__(self, mainParser):
-        self.reader = mainParser.reader
+        None
+        
+    def parse_define(self, params):
+        None
+    '''    self.reader = mainParser.reader
         self.writer = mainParser.writer
         self.mainParser = mainParser
         
@@ -18,7 +22,7 @@ class JavascriptParser:
         self.reader.open_block()
         self.reader.parse_current_level()
         self.reader.close_block()
-        self.reader.writeline(tag.closing())
+        self.reader.writeline(tag.closing())'''
         
 class Function:
     name = ""

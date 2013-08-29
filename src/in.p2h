@@ -4,16 +4,16 @@ css:
             background-color=black
         if hovered:
             background-color=blue
-
     apply(style, tag=h1, tag=h2)
 
 html:
     body(id=hello):
         paragraph(id=demo):
             "This is a paragraph.
-        button(type=button, onclick="displayDate()):
+        input(type=button, onclick="displayDate()"):
             "Display Date
 
 js:
     def displayDate():
         document.getElementById("demo").innerHTML=Date()
+        
