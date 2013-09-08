@@ -1,8 +1,8 @@
 import re
 
 class CssDictionary:
-    styles = {}
     def define(self, id, definition):
+        self.styles = {}
         self.styles[id] = definition
         #print("WE HAVE DEFINED: '" + id + "' as: \n" + definition + "\n Glory to Rome!!!!!")
     
@@ -13,12 +13,9 @@ class CssDictionary:
         return self.styles[id]
 
 class CssParser:
-    dictionary = CssDictionary()
-    reader = None
-    writer = None
-    mainParser = None
     
     def __init__(self, mainParser):
+        self.dictionary = CssDictionary()
         None
         #self.writer = mainParser.writer
         #self.mainParser = mainParser
@@ -43,8 +40,6 @@ class CssParser:
         return [x.strip() for x in params.split(',')]
 
 class CssStyleBlock:
-    styleDef = ""
-    selector = ""
     def __init__(self, styleDef, selector):
         self.styleDef = styleDef
         self.selector = selector
@@ -61,19 +56,18 @@ class CssStyleBlock:
         return block
 
 class CssSelector:
-    selector = ""
     def __init__(self, type, id):
         if type == 'tag':
-            selector = id
+            self.selector = id
         elif type == 'class':
-            selector = '.' + id
+            self.selector = '.' + id
         elif type == 'id':
-            selector = '#' + id
+            self.selector = '#' + id
 
 class CssApplyStyleParams:
-    style = ""
-    selectors = []
     def __init__(self, param_list):
+        self.style = ""
+        self.selectors = []
         self.style = param_list.pop(0)
         while param_list:
             type, id = re.match(r'(\w+)\=(\w+)', param_list.pop(0)).groups()

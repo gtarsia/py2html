@@ -1,12 +1,6 @@
 
 
 class JavascriptParser:
-    reader = None
-    writer = None
-    mainParser = None
-    
-    def __init__(self, mainParser):
-        None
         
     def parse_define(self, params):
         None
@@ -25,8 +19,6 @@ class JavascriptParser:
         self.reader.writeline(tag.closing())'''
         
 class Function:
-    name = ""
-    param_list = []
     def __init__(self, name, param_list):
         self.name = name
         self.param_list = param_list

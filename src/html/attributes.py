@@ -6,16 +6,16 @@ Created on 21/08/2013
 import re
 
 class GlobalAttributeList:
-    attributes = []
     def __init__(self):
+        self.attributes = []
         self.attributes.append("id")
         self.attributes.append("style")
     def has_attribute(self, attribute):
         return attribute in self.attributes
         
 class AttributeParser:
-    output = []
     def __init__(self, params, attributeList):
+        self.output = []
         paramAttributes = re.findall(r'(\w+\),\S+', params)
         for attribute in paramAttributes:
             if attribute in attributeList:

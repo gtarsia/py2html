@@ -1,16 +1,18 @@
-from lexical.structure import Block
-from lexical.structure import Statement
+from comparators import RegexComparator
+
+class GrammarNode(object):
+    comparator = None
+    
+    @classmethod
+    def try_create(cls, str):
+        cls.comparator.match(str)
+
+class HtmlParagraph(GrammarNode):
+    comparator = RegexComparator('paragraph(.*)')
+    def __init__(self):
+        
 
 class HtmlParser():
-    reader = None
-    writer = None
-    mainParser = None
-    
-    def __init__(self, mainParser):
-        None
-        '''self.reader = mainParser.reader
-        self.writer = mainParser.writer
-        self.mainParser = mainParser'''
     
     def parse_html(self, param_list):
         None
@@ -45,19 +47,19 @@ class HtmlParser():
         #self.writer.writeline(tag.opening())
         #self.mainParser.open_block()
         #self.mainParser.parse()
-        #self.mainParser.close_block()
+        #meelf.mainParser.close_block()
         #self.writer.writeline(tag.closing())
         
     def write_tag_statement(self, tag, params):
         None
         #self.writer.writeline(tag)'''
 
-class Tag:
-    tagId = ""
-    param_list = []
+class Tag(Translation):
     def __init__(self, tagId, param_list):
         self.tagId = tagId
+        self.param_list = []
         self.param_list = param_list
+        
     def opening(self):
         return ("<" + self.tagId + ' '.join(self.param_list) + ">")
     

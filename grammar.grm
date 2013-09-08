@@ -1,34 +1,19 @@
-Main
-  css: !Css
-  html: !Html
+Root
+  CssRoot ->
+  HtmlRoot ->
 
-Css
-  define: !CssDefine
-  apply: >css.apply
+CssRoot
+  CssDefine
+  CssApply
 
-CssDefine
-  if
-    $.+
-      : !CssBlock
+HtmlRoot
+  HtmlBody
+  HtmlHead
+  HtmlFooter
+  HtmlParagraph
+  CssRoot ->
+  JsRoot ->
 
-CssBlock
-  $.+ >css.define
-
-Html
-  body
-    $(.*)
-      : >html.body
-  head
-    $(.*)
-      : >html.head
-  footer
-    $(.*)
-      : >html.footer
-  js.script:
-    !Js
-
-Js
-  def 
-    $(.*)
-      : >js.define
-    $.+ >main.write
+JsRoot
+  JsFunction
+  JsClass
