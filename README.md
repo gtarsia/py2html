@@ -14,25 +14,24 @@ A unyfy code block can have parts of css, html, js and templating, but it will l
 
 Examples speak more than words:
 
-    css.define(style):
-        if default
-            background-color=black
-        if hovered
-            background-color=blue
+    css:
+        define(style):
+            if default:
+                background-color=black
+            if hovered:
+                background-color=blue
+        apply(style, tag=h1, tag=h2)
     
-    css.apply(style, tag="h1")
-    css.apply(style, id="hello")
-    
-    html.html:
-        html.body(id="hello"):
-            html.paragraph(id="demo"):
+    html:
+        body(id="hello"):
+            paragraph(id=demo):
                 "This is a paragraph.
-            html.button(type="button", onclick="displayDate()"):
+            input(type="button", onclick="displayDate()"):
                 "Display Date
-        js.script:
-            def displayDate():
-                document.getElementById("demo").innerHTML=Date()
     
+    js:
+        def displayDate():
+            document.getElementById("demo").innerHTML=Date()
 
 to HTML:
 
@@ -52,7 +51,7 @@ to HTML:
     <html>
         <body id="hello">
             <p id="demo">This is a paragraph.</p>
-            <button type="button", onclick="displayDate()">Display Date</button>
+            <input type="button", onclick="displayDate()">Display Date</button>
         </body>
     
         <script>
