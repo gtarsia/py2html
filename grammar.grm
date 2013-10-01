@@ -3,17 +3,19 @@ Root
   HtmlRoot ->
 
 CssRoot
-  CssDefine
-  CssApply
+  CssDefine()
+  CssApply()
 
-HtmlRoot
-  HtmlBody
-  HtmlHead
-  HtmlFooter
-  HtmlParagraph
+HtmlRoot()
+  HtmlBody()
+  HtmlHead()
+  HtmlFooter()
+  HtmlParagraph()
   CssRoot ->
   JsRoot ->
 
-JsRoot
-  JsFunction
-  JsClass
+HtmlCssRoot
+
+JsRoot()
+  JsFunction()
+  JsClass()

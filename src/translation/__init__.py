@@ -13,4 +13,4 @@ class Translator:
             if line.level() != 0:
                 raise SyntaxError('This line should be of level 0')
             translation = self.grammar_translator.translate(line)
-            global_writer.write
+            
