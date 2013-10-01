@@ -4,6 +4,8 @@ Created on 25/08/2013
 @author: guidi
 '''
 import re
+from common import Reader
+from common.temp import UnyfyLine
 
 class UnyfyReader(Reader):
     last_line = None
