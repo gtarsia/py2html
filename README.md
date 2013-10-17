@@ -23,15 +23,15 @@ Examples speak more than words:
         apply(style, tag=h1, tag=h2)
     
     html:
-        body(id="hello"):
-            paragraph(id=demo):
+        Body:
+            demo Paragraph:
                 "This is a paragraph.
-            input(type="button", onclick="displayDate()"):
+            date_button InputButton(onclick="displayDate()"):
                 "Display Date
     
     js:
         def displayDate():
-            document.getElementById("demo").innerHTML=Date()
+            page.demo.innerHTML=Date()
 
 to HTML:
 
