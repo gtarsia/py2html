@@ -6,33 +6,43 @@ A python templating engine.
 What is unyfy
 =======
 
-unyfy is a template engine, but also a web language.
-unyfy translates css, html and js coding to a Python-like syntax.
-The template engine has also the same syntax.
+unyfy is a template engine, but also a web language.  
+unyfy translates to css, html and js code from a Python-like syntax.  
+unyfy takes many concepts from object oriented programming (even though, html is NOT a programming language)  
 
 A unyfy code block can have parts of css, html, js and templating, but it will look like a single homogenic language.
 
 Examples speak more than words:
 
     css:
-        define(style):
-            if default:
+        Body:
+            default:
                 background-color=black
-            if hovered:
+            hover:
                 background-color=blue
-        apply(style, tag=h1, tag=h2)
+        
+        demo:
+            default:
+                background-color=black
+            hover:
+                background-color=blue
     
     html:
         Body:
-            demo Paragraph:
+            demo Paragraph():
                 "This is a paragraph.
-            date_button InputButton(onclick="displayDate()"):
-                "Display Date
+            DateButton()
+            DateButton()
     
     js:
-        def displayDate():
-            page.demo.innerHTML=Date()
-
+        class DateButton(InputButton):
+            def __init__():
+                onclick = display_date
+                innerHTML = "Display Date"
+            
+            def display_date():
+                demo.innerHTML = js.Date()
+                
 to HTML:
 
     h1 {
@@ -52,6 +62,7 @@ to HTML:
         <body id="hello">
             <p id="demo">This is a paragraph.</p>
             <input type="button", onclick="displayDate()">Display Date</button>
+            <input type="button", onclick="displayDate()">Display Date</button>
         </body>
     
         <script>
@@ -61,5 +72,6 @@ to HTML:
         </script>
     </html>
 
-unyfy aims to make web code readable, thus easier to learn(in other words, making css, html, 
-and js easier to learn at the same time), and fun.
+unyfy aims to make web code more readable, thus easier to learn(in other words, making css, html, 
+and js easier to learn at the same time), and fun.  
+I expect to develop an eclipse plugin to enjoy goodies like autocomplete and make you happy.
